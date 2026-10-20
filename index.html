@@ -305,12 +305,17 @@
 
       gameArea.appendChild(heart);
     }
-document.querySelectorAll('button, .key, [onclick]').forEach(el => {
-    el.addEventListener('pointerdown', function(e) {
-        e.preventDefault();
-        this.click();
-    });
-});
+// Mobil & iPad Dokunma ve Tıklama Engelini Kaldırma Kodu
+document.addEventListener('DOMContentLoaded', function() {
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(el => {
+        el.style.touchAction = 'manipulation'
+
+document.addEventListener('pointerdown', function(e) {
+    if (e.target) {
+        e.target.click();
+    }
+}, { passive: true });
 
   </script>
 
