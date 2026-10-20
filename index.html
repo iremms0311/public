@@ -57,10 +57,11 @@
         #page-playlist { background-image: url('5-playlist.png'); }
         #page-game { background-image: url('6-oyun.png'); }
 
-        /* HOTSPOTS (Tıklanabilir Alanlar) */
+        /* HOTSPOTS - İpad için dokunma kilidi kaldırıldı */
         .hotspot {
             position: absolute;
             cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -76,9 +77,11 @@
             gap: 15px;
         }
 
+        /* KEY-TOUCH - İpad için dokunma kilidi kaldırıldı */
         .key-touch {
             border-radius: 20px;
             cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
         }
 
         .key-touch:active {
@@ -94,6 +97,7 @@
             height: 90px;
             border-radius: 50%;
             cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
         }
 
         /* Kutular Sayfasındaki 4 Sürpriz Kutu */
@@ -111,6 +115,7 @@
             height: 140px;
             border-radius: 50%;
             cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
         }
 
         .record-rotate {
@@ -126,6 +131,7 @@
             position: absolute;
             font-size: 40px;
             cursor: pointer;
+            background: rgba(255, 255, 255, 0.01);
             animation: pulse 0.8s infinite alternate;
         }
 
@@ -200,8 +206,8 @@
 
     </div>
 
-    <!-- MÜZİK SES DOSYASI -->
-    <audio id="bg-music" src="song.mp3" loop></audio>
+    <!-- MÜZİK SES DOSYASI (lovesong.mp3 olarak ayarlandı) -->
+    <audio id="bg-music" src="lovesong.mp3" loop></audio>
 
     <script>
         let enteredPin = "";
@@ -209,7 +215,6 @@
         let isPlaying = false;
         let score = 0;
 
-        // SAYFA DEĞİŞTİRME FONKSİYONU
         function showPage(pageId) {
             document.querySelectorAll('.page').forEach(page => {
                 page.classList.remove('active');
@@ -217,7 +222,6 @@
             document.getElementById(pageId).classList.add('active');
         }
 
-        // DOKUNMA VE TIKLAMA OLAYLARINI TEK ÇATI ALTINDA BİRLEŞTİRME (MOBİL VE IPAD UYUMLU)
         function bindTouchClick(element, handler) {
             let touchHandled = false;
 
@@ -235,7 +239,6 @@
             });
         }
 
-        // TUSLARA BASMA
         document.querySelectorAll('.key-touch').forEach(key => {
             bindTouchClick(key, function() {
                 const keyValue = this.getAttribute('data-key');
@@ -256,7 +259,6 @@
             });
         });
 
-        // TÜM DİĞER TIKLANABİLİR ALANLARI MOBİLE UYUMLU HALE GETİRMA
         document.querySelectorAll('.hotspot, .btn-next-back').forEach(el => {
             bindTouchClick(el, function() {
                 if (this.onclick) {
@@ -265,7 +267,6 @@
             });
         });
 
-        // PLAK / MÜZİK ÇALAR
         const music = document.getElementById('bg-music');
         const recordBtn = document.getElementById('record-btn');
 
@@ -286,7 +287,6 @@
             });
         }
 
-        // OYUN FONKSİYONLARI
         function startGame() {
             showPage('page-game');
             score = 0;
