@@ -2,328 +2,176 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>A Special Surprise For Aaron ❤️</title>
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            -webkit-user-select: none;
-            touch-action: manipulation;
         }
-
         body, html {
             width: 100%;
             height: 100%;
             overflow: hidden;
             background-color: #fce4ec;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-
-        .page-container {
-            position: relative;
-            width: 100vw;
-            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-family: sans-serif;
         }
 
-        .page {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-size: contain;
+        /* Sabit 16:9 Oranlı Ana Kapsayıcı (Asla kaymaz, her ekranda ortalanır) */
+        .screen-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            max-width: 1200px;
+            max-height: 675px;
+            background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.4s ease-in-out;
         }
 
-        .page.active {
-            opacity: 1;
-            pointer-events: auto;
+        /* 1. Sayfa: Kilit Ekranı */
+        #page1 {
+            background-image: url('1-kilit.png');
         }
 
-        #page-lock { background-image: url('1-kilit.png'); }
-        #page-boxes { background-image: url('2-kutular.png'); }
-        #page-dragonball { background-image: url('3-dragonball.png'); }
-        #page-letter { background-image: url('4-mektup.png'); }
-        #page-playlist { background-image: url('5-playlist.png'); }
-        #page-game { background-image: url('6-oyun.png'); }
+        /* 2. Sayfa: Oyun Ekranı */
+        #page2 {
+            display: none;
+            background-image: url('2-kutular.png');
+        }
 
-        /* HOTSPOTS - İpad için dokunma kilidi kaldırıldı */
-        .hotspot {
+        /* Şifre Tuşları Alanı (Görseldeki tuşlarla birebir uyumlu konum) */
+        .keypad {
             position: absolute;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.01);
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .keypad-grid {
-            position: absolute;
-            bottom: 11%;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 320px;
-            height: 380px;
+            right: 7.5%;
+            bottom: 10%;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
+            gap: 10px;
+            width: 290px;
+            height: 240px;
         }
 
-        /* KEY-TOUCH - İpad için dokunma kilidi kaldırıldı */
-        .key-touch {
-            border-radius: 20px;
+        .key {
+            background: transparent;
+            border: none;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.01);
         }
 
-        .key-touch:active {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* Sağ Alt Tıklanabilir Alanlar (Exit / Back) */
-        .btn-next-back {
+        /* Şifre Gösterge Alanı */
+        #displayArea {
             position: absolute;
-            bottom: 3%;
-            right: 4%;
-            width: 90px;
-            height: 90px;
-            border-radius: 50%;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.01);
+            right: 13%;
+            top: 15.5%;
+            font-size: 26px;
+            color: #d81b60;
+            font-weight: bold;
+            letter-spacing: 18px;
         }
 
-        /* Kutular Sayfasındaki 4 Sürpriz Kutu */
-        .box-1 { top: 22%; left: 8%; width: 20%; height: 55%; }
-        .box-2 { top: 22%; left: 30%; width: 20%; height: 55%; }
-        .box-3 { top: 22%; left: 52%; width: 20%; height: 55%; }
-        .box-4 { top: 22%; left: 74%; width: 20%; height: 55%; }
-
-        /* Müzik Plak Butonu */
-        #record-btn {
+        /* Oyun Sayaç Yazısı (Mor çerçevenin üst kısmı) */
+        #heartsCounter {
             position: absolute;
-            top: 32%;
-            left: 10%;
-            width: 140px;
-            height: 140px;
-            border-radius: 50%;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.01);
-        }
-
-        .record-rotate {
-            animation: spin 3s linear infinite;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Oyundaki Kalp Yakalama */
-        #catch-heart {
-            position: absolute;
-            font-size: 40px;
-            cursor: pointer;
-            background: rgba(255, 255, 255, 0.01);
-            animation: pulse 0.8s infinite alternate;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            100% { transform: scale(1.2); }
-        }
-
-        #score-display {
-            position: absolute;
-            top: 5%;
+            top: 31.5%;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 24px;
-            font-weight: bold;
+            font-size: 20px;
             color: #d81b60;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* You Win Yazısı (Mor çerçevenin orta beyaz alanı) */
+        #winMessage {
+            display: none;
+            position: absolute;
+            top: 48%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            color: #c2185b;
+            font-weight: bold;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
     </style>
 </head>
 <body>
 
-    <div class="page-container">
-
-        <!-- 1. KİLİT EKRANI -->
-        <div id="page-lock" class="page active">
-            <div class="keypad-grid">
-                <div class="key-touch" data-key="1"></div>
-                <div class="key-touch" data-key="2"></div>
-                <div class="key-touch" data-key="3"></div>
-                <div class="key-touch" data-key="4"></div>
-                <div class="key-touch" data-key="5"></div>
-                <div class="key-touch" data-key="6"></div>
-                <div class="key-touch" data-key="7"></div>
-                <div class="key-touch" data-key="8"></div>
-                <div class="key-touch" data-key="9"></div>
-                <div></div>
-                <div class="key-touch" data-key="0"></div>
-                <div class="key-touch" data-action="check"></div>
-            </div>
+    <!-- 1. SAYFA: KİLİT EKRANI -->
+    <div class="screen-container" id="page1">
+        <div id="displayArea"></div>
+        
+        <!-- Şifre Tuşları (1'den 9'a, Silme, 0 ve Onay) -->
+        <div class="keypad">
+            <button class="key" onclick="pressKey('1')"></button>
+            <button class="key" onclick="pressKey('2')"></button>
+            <button class="key" onclick="pressKey('3')"></button>
+            <button class="key" onclick="pressKey('4')"></button>
+            <button class="key" onclick="pressKey('5')"></button>
+            <button class="key" onclick="pressKey('6')"></button>
+            <button class="key" onclick="pressKey('7')"></button>
+            <button class="key" onclick="pressKey('8')"></button>
+            <button class="key" onclick="pressKey('9')"></button>
+            <button class="key" onclick="clearCode()"></button>
+            <button class="key" onclick="pressKey('0')"></button>
+            <button class="key" onclick="submitCode()"></button>
         </div>
-
-        <!-- 2. KUTULAR SAYFASI -->
-        <div id="page-boxes" class="page">
-            <div class="hotspot box-1" onclick="showPage('page-dragonball')"></div>
-            <div class="hotspot box-2" onclick="showPage('page-letter')"></div>
-            <div class="hotspot box-3" onclick="showPage('page-playlist')"></div>
-            <div class="hotspot box-4" onclick="startGame()"></div>
-        </div>
-
-        <!-- 3. DRAGONBALL SAYFASI -->
-        <div id="page-dragonball" class="page">
-            <div class="hotspot btn-next-back" onclick="showPage('page-boxes')"></div>
-        </div>
-
-        <!-- 4. MEKTUP SAYFASI -->
-        <div id="page-letter" class="page">
-            <div class="hotspot btn-next-back" onclick="showPage('page-boxes')"></div>
-        </div>
-
-        <!-- 5. PLAYLIST SAYFASI -->
-        <div id="page-playlist" class="page">
-            <div id="record-btn"></div>
-            <div class="hotspot btn-next-back" onclick="showPage('page-boxes')"></div>
-        </div>
-
-        <!-- 6. OYUN SAYFASI -->
-        <div id="page-game" class="page">
-            <div id="score-display">HEARTS: 0 / 5</div>
-            <div id="game-area" style="width:100%; height:100%; position:relative;"></div>
-            <div class="hotspot btn-next-back" onclick="showPage('page-boxes')"></div>
-        </div>
-
     </div>
 
-    <!-- MÜZİK SES DOSYASI (lovesong.mp3 olarak ayarlandı) -->
-    <audio id="bg-music" src="lovesong.mp3" loop></audio>
+    <!-- 2. SAYFA: OYUN VE MÜZİK EKRANI -->
+    <div class="screen-container" id="page2">
+        <div id="heartsCounter">HEARTS: 0 / 5</div>
+        <div id="winMessage">YOU WIN! ❤️</div>
+    </div>
+
+    <!-- Arkaplan Müzik Dosyası -->
+    <audio id="bgMusic" loop>
+        <source src="lovesong.mp3" type="audio/mpeg">
+    </audio>
 
     <script>
-        let enteredPin = "";
-        const correctPin = "0807";
-        let isPlaying = false;
-        let score = 0;
+        let enteredCode = "";
+        const correctCode = "0807";
+        let collectedHearts = 0;
 
-        function showPage(pageId) {
-            document.querySelectorAll('.page').forEach(page => {
-                page.classList.remove('active');
-            });
-            document.getElementById(pageId).classList.add('active');
-        }
+        function pressKey(digit) {
+            // İlk tuşlamada müzik çalmaya başlar
+            const music = document.getElementById('bgMusic');
+            music.play().catch(e => console.log("Müzik çalma hatası:", e));
 
-        function bindTouchClick(element, handler) {
-            let touchHandled = false;
-
-            element.addEventListener('touchstart', function(e) {
-                touchHandled = true;
-                e.preventDefault();
-                handler.call(this, e);
-            }, { passive: false });
-
-            element.addEventListener('click', function(e) {
-                if (!touchHandled) {
-                    handler.call(this, e);
-                }
-                touchHandled = false;
-            });
-        }
-
-        document.querySelectorAll('.key-touch').forEach(key => {
-            bindTouchClick(key, function() {
-                const keyValue = this.getAttribute('data-key');
-                const actionValue = this.getAttribute('data-action');
-
-                if (keyValue) {
-                    if (enteredPin.length < 4) {
-                        enteredPin += keyValue;
-                    }
-                } else if (actionValue === 'check') {
-                    if (enteredPin === correctPin) {
-                        showPage('page-boxes');
-                    } else {
-                        alert("Wrong PIN! Try again.");
-                        enteredPin = "";
-                    }
-                }
-            });
-        });
-
-        document.querySelectorAll('.hotspot, .btn-next-back').forEach(el => {
-            bindTouchClick(el, function() {
-                if (this.onclick) {
-                    this.onclick();
-                }
-            });
-        });
-
-        const music = document.getElementById('bg-music');
-        const recordBtn = document.getElementById('record-btn');
-
-        if (recordBtn) {
-            bindTouchClick(recordBtn, function() {
-                if (isPlaying) {
-                    music.pause();
-                    recordBtn.classList.remove('record-rotate');
-                    isPlaying = false;
-                } else {
-                    music.play().then(() => {
-                        recordBtn.classList.add('record-rotate');
-                        isPlaying = true;
-                    }).catch(err => {
-                        console.log("Audio play error:", err);
-                    });
-                }
-            });
-        }
-
-        function startGame() {
-            showPage('page-game');
-            score = 0;
-            document.getElementById('score-display').innerText = "HEARTS: 0 / 5";
-            spawnHeart();
-        }
-
-        function spawnHeart() {
-            const gameArea = document.getElementById('game-area');
-            const oldHeart = document.getElementById('catch-heart');
-            if (oldHeart) oldHeart.remove();
-
-            if (score >= 5) {
-                document.getElementById('score-display').innerText = "YOU WIN! ❤️";
-                return;
+            if (enteredCode.length < 4) {
+                enteredCode += digit;
+                updateDisplay();
             }
+        }
 
-            const heart = document.createElement('div');
-            heart.id = 'catch-heart';
-            heart.innerHTML = '💖';
+        function clearCode() {
+            enteredCode = "";
+            updateDisplay();
+        }
 
-            const maxX = gameArea.clientWidth - 60;
-            const maxY = gameArea.clientHeight - 60;
+        function updateDisplay() {
+            // Şifre alanına yıldız veya girilen rakamlar maskelenerek yazılır
+            document.getElementById('displayArea').innerText = "❤️".repeat(enteredCode.length);
+        }
 
-            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
-            const randomY = Math.max(50, Math.floor(Math.random() * maxY));
-
-            heart.style.left = randomX + 'px';
-            heart.style.top = randomY + 'px';
-
-            bindTouchClick(heart, function() {
-                score++;
-                document.getElementById('score-display').innerText = "HEARTS: " + score + " / 5";
-                spawnHeart();
-            });
-
-            gameArea.appendChild(heart);
+        function submitCode() {
+            if (enteredCode === correctCode) {
+                // Doğru şifre: 2. sayfaya geç
+                document.getElementById('page1').style.display = 'none';
+                document.getElementById('page2').style.display = 'block';
+            } else {
+                alert("Yanlış şifre aşkım, tekrar dene ❤️");
+                clearCode();
+            }
         }
     </script>
 </body>
