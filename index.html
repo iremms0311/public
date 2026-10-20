@@ -305,11 +305,13 @@
 
       gameArea.appendChild(heart);
     }
-document.querySelectorAll('button, .key, .pad-btn').forEach(el => {
-    el.addEventListener('touchend', function(e) {
+document.querySelectorAll('button, .key, [onclick]').forEach(el => {
+    el.addEventListener('pointerdown', function(e) {
+        e.preventDefault();
         this.click();
     });
 });
+
   </script>
 
 </body>
